@@ -5,7 +5,7 @@
 Summary:	Telepathy Logging for Qt
 Name:		telepathy-logger-qt
 Version:	0.5.1
-Release:	3
+Release:	4
 Url:		https://projects.kde.org/projects/extragear/network/telepathy/%{name}
 Source0:	ftp://ftp.gtlib.cc.gatech.edu/pub/kde/unstable/telepathy-kde/%{version}/src/%{name}-%{version}.tar.bz2
 License:	GPLv2+
