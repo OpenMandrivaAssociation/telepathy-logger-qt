@@ -25,6 +25,7 @@ BuildRequires: cmake(Qt5Core)
 BuildRequires: cmake(Qt5Gui)
 BuildRequires: cmake(Qt5Widgets)
 BuildRequires: cmake(Qt5Test)
+BuildRequires: cmake(TelepathyQt5)
 BuildRequires: boost-devel
 BuildRequires: pkgconfig(telepathy-logger-0.2)
 BuildRequires: pkgconfig(glib-2.0)
