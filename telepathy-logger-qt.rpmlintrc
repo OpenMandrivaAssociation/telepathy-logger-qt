@@ -1,0 +1,2 @@
+# Intentional for now because they insist on both .so.0 and .so.5
+addFilter("E: incoherent-version-in-name")

@@ -1,70 +1,77 @@
-%define major 1
-%define libname %mklibname %{name} 4 %{major}
-%define libdev %mklibname %{name} -d
+%define major 0
+%define libname %mklibname telepathy-logger-qt %{major}
+%define devname %mklibname telepathy-logger-qt -d
+%define _disable_lto 1
 
-Summary:	Telepathy Logging for Qt
-Name:		telepathy-logger-qt
-Version:	0.5.1
-Release:	4
-Url:		https://projects.kde.org/projects/extragear/network/telepathy/%{name}
-Source0:	ftp://ftp.gtlib.cc.gatech.edu/pub/kde/unstable/telepathy-kde/%{version}/src/%{name}-%{version}.tar.bz2
-License:	GPLv2+
-Group:		Networking/Instant messaging 
-BuildRequires:	pkgconfig(python-2.7)
-BuildRequires:	pkgconfig(dbus-1)
-BuildRequires:	pkgconfig(QtGLib-2.0)
-BuildRequires:	pkgconfig(telepathy-logger-0.2)
-BuildRequires:	pkgconfig(TelepathyQt4) >= 0.9.1
-BuildRequires:	pkgconfig(libxml-2.0)
-BuildRequires:	qt4-devel
-BuildRequires:	boost-devel
-BuildRequires:	bison
-BuildRequires:	cmake
-BuildRequires:	flex
+Name: telepathy-logger-qt
+Version:	15.04.0
+%define is_beta %(if test `echo %{version} |cut -d. -f3` -ge 70; then echo -n 1; else echo -n 0; fi)
+%if %{is_beta}
+%define ftpdir unstable
+%else
+%define ftpdir stable
+%endif
+Release:	1
+Source0: http://download.kde.org/%{ftpdir}/telepathy-logger-qt/%(echo %{version}|cut -d. -f1-2)/src/%{name}-%{version}.tar.xz
+Source100: %{name}.rpmlintrc
+Summary: Qt bindings to Telepathy IM logging
+URL: http://kde.org/
+License: GPL
+Group: System/Libraries
+BuildRequires: cmake(ECM)
+BuildRequires: cmake(KF5Mime)
+BuildRequires: cmake(KF5KDELibs4Support)
+BuildRequires: cmake(Qt5Core)
+BuildRequires: cmake(Qt5Gui)
+BuildRequires: cmake(Qt5Widgets)
+BuildRequires: cmake(Qt5Test)
+BuildRequires: boost-devel
+BuildRequires: pkgconfig(telepathy-logger-0.2)
+BuildRequires: pkgconfig(glib-2.0)
+BuildRequires: pkgconfig(gobject-2.0)
+BuildRequires: pkgconfig(dbus-1)
+BuildRequires: pkgconfig(dbus-glib-1)
+BuildRequires: pkgconfig(libxml-2.0)
+BuildRequires: pkgconfig(telepathy-glib)
+BuildRequires: pkgconfig(farstream-0.2) pkgconfig(gstreamer-1.0) pkgconfig(gstreamer-plugins-base-1.0) pkgconfig(telepathy-farstream) pkgconfig(telepathy-glib)
 
 %description
-Telepathy Logging for Qt.
-
-#------------------------------------------------------------------------------
+Qt bindings to Telepathy IM logging
 
 %package -n %{libname}
-Summary:	Telepathy Logging for Qt
-Group:		System/Libraries
+Summary: KDE library for accessing MBOX mail files
+Group: System/Libraries
 
 %description -n %{libname}
-Telepathy Logging for Qt.
+KDE library for accessing MBOX mail files
 
-%files -n %{libname}
-%{_libdir}/libtelepathy-logger-qt4.so.%{major}*
+%package -n %{devname}
+Summary: Development files for %{name}
+Group: Development/C
+Requires: %{libname} = %{EVRD}
 
-#------------------------------------------------------------------------------
-
-%package -n %{libdev}
-Summary:	Header files, libraries and development documentation for %{name}
-Group:		Development/C
-Requires:	%{libname} = %{version}-%{release}
-Provides:	%{name}-devel = %{version}-%{release}
-Provides:	%{name}4-devel = %{version}-%{release}
-
-%description -n %{libdev}
-This package contains the header files, static libraries and development
-documentation for %{name}. If you like to develop programs using 
-%{name}, you will need to install %{name}-devel.
-
-%files -n %{libdev}
-%{_includedir}/telepathy-logger-0.2/TelepathyLoggerQt4
-%{_libdir}/pkgconfig/TelepathyLoggerQt4.pc
-%{_libdir}/libtelepathy-logger-qt4.so
-
-#------------------------------------------------------------------------------
+%description -n %{devname}
+Development files (Headers etc.) for %{name}.
 
 %prep
-%setup -q 
+%setup -q
+ln -s %{_bindir}/python2 python
+export PATH=$(pwd):$PATH
+%cmake_kde5
 
 %build
-%cmake_qt4 -DBUILD_SHARED_LIBS=ON
-#cmake -DBUILD_SHARED_LIBS=ON
-%make
+export PATH=$(pwd):$PATH
+%ninja -C build -j1
 
 %install
-%makeinstall_std -C build
+export PATH=$(pwd):$PATH
+%ninja_install -C build
+
+%files -n %{libname}
+%{_libdir}/*.so.%{major}*
+%{_libdir}/*.so.5
+
+%files -n %{devname}
+%{_includedir}/*
+%{_libdir}/*.so
+%{_libdir}/cmake/*
