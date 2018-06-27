@@ -11,7 +11,7 @@ Version:	17.08.0
 %else
 %define ftpdir stable
 %endif
-Release:	1
+Release:	2
 Source0: http://download.kde.org/%{ftpdir}/telepathy-logger-qt/%(echo %{version}|cut -d. -f1-2)/src/%{name}-%{version}.tar.xz
 Source100: %{name}.rpmlintrc
 Summary: Qt bindings to Telepathy IM logging
